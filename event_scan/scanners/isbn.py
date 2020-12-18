@@ -14,7 +14,7 @@ def scan(config, isbn):
             published = datetime.strptime(item['volumeInfo']['publishedDate'], '%Y-%m-%d')
             url = item['volumeInfo']['canonicalVolumeLink']
             authors = ', '.join(item['volumeInfo']['authors'])
-            title = f"{item['volumeInfo']['canonicalVolumeLink']} by {authors} is out!"
+            title = f"{item['volumeInfo']['title']} by {authors} is out!"
             description = item['volumeInfo']['description']
 
             return published < datetime.now(), Event(
