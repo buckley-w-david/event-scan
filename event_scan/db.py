@@ -36,7 +36,7 @@ def connect(connection_string):
 def add_source(conn, data_type: str, data: str, once: bool):
     return conn.execute(sources.insert(), data_type=data_type, data=data, once=once)
 
-def add_event(conn, source_id: str, event: Event):
+def add_event(conn, source_id: int, event: Event):
     return conn.execute(
         events.insert(),
         source_id=source_id,
