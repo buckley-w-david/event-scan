@@ -17,12 +17,11 @@ def scan(config, isbn):
             title = f"{item['volumeInfo']['title']} by {authors} is out!"
             description = item['volumeInfo']['description']
 
-            return Event(
-                url=url,
-                title=title,
-                description=description,
-                date=published,
-            )
-
-
+            if published < datetime.now():
+                return Event(
+                    url=url,
+                    title=title,
+                    description=description,
+                    date=published,
+                )
     return None
