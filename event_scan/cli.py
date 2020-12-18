@@ -1,11 +1,10 @@
-from pathlib import Path
-import typer
-import toml
-
 from dataclasses import dataclass
 from datetime import timezone
 
-from sqlalchemy import text
+from feedgen.feed import FeedGenerator
+from pathlib import Path
+import typer
+import toml
 
 from event_scan import db
 from event_scan import scanners
@@ -27,7 +26,7 @@ def add(data_type: str, data: str, once: bool = False, config_file: Path = Path(
     with db.connect(config.db) as conn:
         res = db.add_source(conn, data_type, data, once)
 
-    print(res)
+    # TODO add some confirmation that source was added
 
 @app.command()
 def scan(config_file: Path = Path('config.toml')):
@@ -36,11 +35,11 @@ def scan(config_file: Path = Path('config.toml')):
     with db.connect(config.db) as conn:
         for (source_id, data_type, data) in db.get_scan_sources(conn):
             scanner = getattr(scanners, data_type)
-            trigger, event = scanner.scan(config, data)
-            if trigger:
+            event = scanner.scan(config, data)
+            if event:
                 db.add_event(conn, source_id, event)
 
-from feedgen.feed import FeedGenerator
+    # TODO add some confirmation scan was performed
 
 @app.command()
 def generate(config_file: Path = Path('config.toml')):
@@ -68,6 +67,8 @@ def generate(config_file: Path = Path('config.toml')):
             feed_entry.published(event.date.replace(tzinfo=timezone.utc))
 
     rss_feed.rss_file(config.feed_path)
+
+    # TODO add some confirmation rss feed was generated
 
 @app.command()
 def run(config_file: Path = Path('config.toml')):

@@ -1,3 +1,5 @@
+import contextlib
+
 from sqlalchemy import create_engine
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, Boolean, DateTime
 from sqlalchemy.sql import text, select
@@ -20,8 +22,6 @@ events = Table('events', metadata,
     Column('description', String, nullable=False),
     Column('event_date', DateTime, nullable=False),
 )
-
-import contextlib
 
 @contextlib.contextmanager
 def connect(connection_string):
@@ -66,6 +66,3 @@ def get_events(conn):
             description=result.description,
             date=result.event_date
         )
-
-if __name__ == '__main__':
-    app()
